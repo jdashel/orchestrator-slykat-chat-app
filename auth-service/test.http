@@ -1,0 +1,29 @@
+# HTTP/gRPC Requests for auth-service
+# Port: 50051
+
+### Register
+GRPC localhost:50051/slykat_chat_app.AuthService/Register
+Content-Type: application/json
+
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+
+### Login
+GRPC localhost:50051/slykat_chat_app.AuthService/Login
+Content-Type: application/json
+
+{
+  "email": "string",
+  "password": "string"
+}
+
+### ValidateToken
+GRPC localhost:50051/slykat_chat_app.AuthService/ValidateToken
+Content-Type: application/json
+
+{
+  "token": "string"
+}
