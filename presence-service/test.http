@@ -1,0 +1,19 @@
+# HTTP/gRPC Requests for presence-service
+# Port: 50053
+
+### SetStatus
+GRPC localhost:50053/slykat_chat_app.PresenceService/SetStatus
+Content-Type: application/json
+
+{
+  "user_id": "string",
+  "status": "string"
+}
+
+### GetStatus
+GRPC localhost:50053/slykat_chat_app.PresenceService/GetStatus
+Content-Type: application/json
+
+{
+  "user_id": "string"
+}
