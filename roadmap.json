@@ -1,0 +1,423 @@
+{
+  "phases": [
+    {
+      "name": "Phase 1: Identity & User Management",
+      "description": "Establish core user registration, authentication, and profile management services."
+    },
+    {
+      "name": "Phase 2: Chat & Messaging",
+      "description": "Implement channel creation, direct messaging capabilities, and message persistence."
+    },
+    {
+      "name": "Phase 3: Real-time Gateway & Presence",
+      "description": "Enable real-time message delivery, connection handling, and user online/offline status tracking."
+    }
+  ],
+  "services": [
+    {
+      "name": "auth-service",
+      "phase": "Phase 1: Identity & User Management",
+      "port": 50051,
+      "description": "Handles user registration, authentication, token generation, and validation.",
+      "grpc_service": "AuthService",
+      "methods": [
+        {
+          "name": "Register",
+          "request_type": "RegisterRequest",
+          "response_type": "RegisterResponse"
+        },
+        {
+          "name": "Login",
+          "request_type": "LoginRequest",
+          "response_type": "LoginResponse"
+        },
+        {
+          "name": "ValidateToken",
+          "request_type": "ValidateTokenRequest",
+          "response_type": "ValidateTokenResponse"
+        }
+      ],
+      "messages": [
+        {
+          "name": "RegisterRequest",
+          "fields": [
+            {
+              "name": "username",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "number": 2
+            },
+            {
+              "name": "password",
+              "type": "string",
+              "number": 3
+            }
+          ]
+        },
+        {
+          "name": "RegisterResponse",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "token",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "LoginRequest",
+          "fields": [
+            {
+              "name": "email",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "password",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "LoginResponse",
+          "fields": [
+            {
+              "name": "token",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "ValidateTokenRequest",
+          "fields": [
+            {
+              "name": "token",
+              "type": "string",
+              "number": 1
+            }
+          ]
+        },
+        {
+          "name": "ValidateTokenResponse",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "is_valid",
+              "type": "bool",
+              "number": 2
+            }
+          ]
+        }
+      ],
+      "table": "users",
+      "columns": [
+        {
+          "name": "id",
+          "type": "SERIAL PRIMARY KEY"
+        },
+        {
+          "name": "username",
+          "type": "VARCHAR(50) UNIQUE NOT NULL"
+        },
+        {
+          "name": "email",
+          "type": "VARCHAR(100) UNIQUE NOT NULL"
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(255) NOT NULL"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "name": "chat-service",
+      "phase": "Phase 2: Chat & Messaging",
+      "port": 50052,
+      "description": "Manages channels, direct message sessions, and stores chat history.",
+      "grpc_service": "ChatService",
+      "methods": [
+        {
+          "name": "CreateChannel",
+          "request_type": "CreateChannelRequest",
+          "response_type": "CreateChannelResponse"
+        },
+        {
+          "name": "SendMessage",
+          "request_type": "SendMessageRequest",
+          "response_type": "SendMessageResponse"
+        },
+        {
+          "name": "GetMessages",
+          "request_type": "GetMessagesRequest",
+          "response_type": "GetMessagesResponse"
+        }
+      ],
+      "messages": [
+        {
+          "name": "CreateChannelRequest",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "creator_id",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "CreateChannelResponse",
+          "fields": [
+            {
+              "name": "channel_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "SendMessageRequest",
+          "fields": [
+            {
+              "name": "channel_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "sender_id",
+              "type": "string",
+              "number": 2
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "number": 3
+            }
+          ]
+        },
+        {
+          "name": "SendMessageResponse",
+          "fields": [
+            {
+              "name": "message_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "created_at",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "GetMessagesRequest",
+          "fields": [
+            {
+              "name": "channel_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "limit",
+              "type": "int32",
+              "number": 2
+            },
+            {
+              "name": "offset",
+              "type": "int32",
+              "number": 3
+            }
+          ]
+        },
+        {
+          "name": "GetMessagesResponse",
+          "fields": [
+            {
+              "name": "messages",
+              "type": "repeated Message",
+              "number": 1
+            }
+          ]
+        },
+        {
+          "name": "Message",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "channel_id",
+              "type": "string",
+              "number": 2
+            },
+            {
+              "name": "sender_id",
+              "type": "string",
+              "number": 3
+            },
+            {
+              "name": "content",
+              "type": "string",
+              "number": 4
+            },
+            {
+              "name": "created_at",
+              "type": "string",
+              "number": 5
+            }
+          ]
+        }
+      ],
+      "table": "messages",
+      "columns": [
+        {
+          "name": "id",
+          "type": "SERIAL PRIMARY KEY"
+        },
+        {
+          "name": "channel_id",
+          "type": "INTEGER NOT NULL"
+        },
+        {
+          "name": "sender_id",
+          "type": "INTEGER NOT NULL"
+        },
+        {
+          "name": "content",
+          "type": "TEXT NOT NULL"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "name": "presence-service",
+      "phase": "Phase 3: Real-time Gateway & Presence",
+      "port": 50053,
+      "description": "Tracks and broadcasts real-time online/offline status of users.",
+      "grpc_service": "PresenceService",
+      "methods": [
+        {
+          "name": "SetStatus",
+          "request_type": "SetStatusRequest",
+          "response_type": "SetStatusResponse"
+        },
+        {
+          "name": "GetStatus",
+          "request_type": "GetStatusRequest",
+          "response_type": "GetStatusResponse"
+        }
+      ],
+      "messages": [
+        {
+          "name": "SetStatusRequest",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "status",
+              "type": "string",
+              "number": 2
+            }
+          ]
+        },
+        {
+          "name": "SetStatusResponse",
+          "fields": [
+            {
+              "name": "success",
+              "type": "bool",
+              "number": 1
+            }
+          ]
+        },
+        {
+          "name": "GetStatusRequest",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 1
+            }
+          ]
+        },
+        {
+          "name": "GetStatusResponse",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "number": 1
+            },
+            {
+              "name": "status",
+              "type": "string",
+              "number": 2
+            },
+            {
+              "name": "last_active",
+              "type": "string",
+              "number": 3
+            }
+          ]
+        }
+      ],
+      "table": "presence",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "INTEGER PRIMARY KEY"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20) NOT NULL"
+        },
+        {
+          "name": "last_active",
+          "type": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        }
+      ]
+    }
+  ],
+  "frontend": "flutter"
+}

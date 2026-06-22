@@ -1,0 +1,10 @@
+.build_state.json
+go.work
+go.work.sum
+*.db
+auth-service/auth-service
+auth-service/auth-service.exe
+chat-service/chat-service
+chat-service/chat-service.exe
+presence-service/presence-service
+presence-service/presence-service.exe
